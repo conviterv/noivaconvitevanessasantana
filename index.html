@@ -2,297 +2,408 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casamento de Ronaldo & Vitória</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Convite de Casamento | Ronaldo & Vitória</title>
     
-    <!-- Tailwind CSS (Estilização Moderna) -->
+    <!-- Tailwind CSS (Design System Moderno) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Great+Vibes&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Great+Vibes&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     
-    <!-- Ícones -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Configurações Personalizadas do Tailwind -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'wedding-gold': '#D4AF37',
-                        'wedding-cream': '#FDFBF7',
-                        'wedding-text': '#4A4A4A',
-                        'wedding-green': '#5F6F52',
-                    },
-                    fontFamily: {
-                        'script': ['"Great Vibes"', 'cursive'],
-                        'serif': ['"Cormorant Garamond"', 'serif'],
-                        'sans': ['"Lato"', 'sans-serif'],
-                    },
-                    backgroundImage: {
-                        'paper-texture': "url('https://www.transparenttextures.com/patterns/cream-paper.png')",
-                    },
-                    animation: {
-                        'fade-in-up': 'fadeInUp 1s ease-out forwards',
-                        'gentle-pulse': 'pulse 3s infinite',
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* Estilos Globais e Animações Específicas */
+        /* Configurações Globais */
+        :root {
+            --primary-gold: #D4AF37;
+            --soft-white: #F9F9F9;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --text-dark: #2C2C2C;
+        }
+
         body {
-            overflow-x: hidden;
-            background-color: #f0f0f0;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden; /* Evita scroll durante a animação */
+            background-color: #000;
         }
 
-        .scroll-hidden::-webkit-scrollbar {
-            display: none;
+        h1, h2, .script-font {
+            font-family: 'Great Vibes', cursive;
         }
 
-        /* Efeito de Vidro Fosco */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
+        .serif-font {
+            font-family: 'Cinzel', serif;
+        }
+
+        /* Fundo Fixo com Transição Suave */
+        #bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: background-image 1s ease-in-out, opacity 0.5s ease;
+        }
+
+        /* Overlay Escuro para melhor leitura */
+        #bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3); /* Escurece levemente a foto */
+            z-index: -1;
+            backdrop-filter: blur(2px);
+        }
+
+        /* Efeito de Vidro (Glassmorphism) */
+        .glass-card {
+            background: var(--glass-bg);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
         }
 
         /* Animação do Envelope */
-        #envelope-overlay {
-            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s ease;
-        }
-        
-        .envelope-open #envelope-overlay {
-            transform: translateY(-100%);
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .content-reveal {
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 1s ease 0.5s;
+        #envelope-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fdfbf7;
+            z-index: 50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
         }
 
-        .envelope-open .content-reveal {
+        .envelope-content {
+            text-align: center;
+            animation: breathe 3s infinite ease-in-out;
+        }
+
+        .wax-seal {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .wax-seal:active {
+            transform: scale(0.9);
+        }
+
+        /* Slides */
+        .slide {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            min-height: 80vh;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .slide.active {
+            display: flex;
             opacity: 1;
-            transform: translateY(0);
         }
 
-        /* Decorações Florais */
-        .floral-corner {
-            position: absolute;
-            width: 150px;
-            opacity: 0.8;
-            z-index: 0;
-            pointer-events: none;
+        /* Animações Keyframes */
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
-        .animate-on-scroll {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease-out;
+
+        .animate-fade-up {
+            animation: fadeInUp 1s ease-out forwards;
         }
-        
-        .is-visible {
-            opacity: 1;
-            transform: translateY(0);
+
+        /* Botões de Navegação */
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid white;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-btn:hover {
+            background: white;
+            color: var(--primary-gold);
         }
     </style>
 </head>
-<body class="antialiased text-wedding-text">
+<body class="text-gray-800 antialiased">
 
-    <!-- CAMADA DO ENVELOPE (Abertura) -->
-    <div id="envelope-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-[#e8e4dc] shadow-2xl">
-        <div class="relative w-full max-w-md p-8 text-center">
-            <!-- Selo de Cera -->
-            <div onclick="openEnvelope()" class="cursor-pointer group relative inline-flex items-center justify-center">
-                <div class="absolute inset-0 bg-wedding-gold rounded-full opacity-20 group-hover:scale-150 transition-transform duration-700 animate-pulse"></div>
-                <div class="relative bg-[#C5A028] w-24 h-24 rounded-full flex items-center justify-center shadow-lg border-4 border-[#B08D22] transform group-hover:scale-105 transition-transform">
-                    <span class="font-script text-3xl text-white pt-2">R & V</span>
-                </div>
+    <!-- Camada de Fundo -->
+    <div id="bg-container"></div>
+    <div id="bg-overlay"></div>
+
+    <!-- Animação de Abertura (Envelope) -->
+    <div id="envelope-wrapper">
+        <div class="envelope-content relative w-full max-w-md px-6">
+            <div class="text-[#D4AF37] text-6xl mb-4">
+                <i class="fa-solid fa-envelope"></i>
             </div>
-            <p class="mt-6 font-serif text-xl text-wedding-text italic animate-bounce">Toque para abrir</p>
+            <h1 class="text-4xl text-gray-800 mb-2 script-font">Ronaldo & Vitória</h1>
+            <p class="text-gray-500 serif-font text-sm uppercase tracking-widest mb-8">Convite Especial</p>
             
-            <!-- Detalhe decorativo do envelope -->
-            <div class="absolute top-0 left-0 w-full h-full border-[20px] border-[#dcd8cf] border-t-[#cabb9e] border-l-[#d4cbb6] border-r-[#d4cbb6] border-b-[#e8e4dc] z-[-1] pointer-events-none box-border"></div>
+            <button onclick="openInvitation()" class="wax-seal bg-[#D4AF37] text-white px-8 py-3 rounded-full shadow-lg font-serif uppercase tracking-wider text-sm hover:bg-[#b5952f] transition">
+                Abrir Convite
+            </button>
         </div>
     </div>
 
-    <!-- CONTEÚDO PRINCIPAL (O Convite) -->
-    <main class="min-h-screen bg-wedding-cream bg-paper-texture flex justify-center pb-12 content-reveal">
+    <!-- Container Principal do Conteúdo -->
+    <main id="main-content" class="relative z-10 w-full min-h-screen flex flex-col justify-center items-center pb-12 hidden">
         
-        <div class="w-full max-w-lg shadow-2xl bg-white relative overflow-hidden">
+        <!-- PÁGINA 1: Capa / Versículo -->
+        <section id="slide-0" class="slide active w-full max-w-lg mx-auto">
+            <div class="glass-card p-8 text-center animate-fade-up mx-4">
+                <p class="text-[#D4AF37] text-xs uppercase tracking-[0.3em] mb-4 serif-font">Vamos nos Casar</p>
+                <h1 class="text-5xl md:text-6xl text-gray-800 mb-6 script-font leading-tight">
+                    Ronaldo<br>&<br>Vitória
+                </h1>
+                
+                <div class="border-t border-b border-[#D4AF37]/30 py-6 my-6">
+                    <p class="text-gray-600 italic text-sm md:text-base leading-relaxed font-serif">
+                        "Acima de tudo, porém, revistam-se do amor, que é o elo perfeito."
+                    </p>
+                    <p class="text-[#D4AF37] text-xs mt-2 font-bold uppercase">Colossenses 3:14</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 2: Pais e Apresentação -->
+        <section id="slide-1" class="slide w-full max-w-lg mx-auto">
+            <div class="glass-card p-8 text-center mx-4">
+                <h2 class="text-3xl text-[#D4AF37] mb-6 script-font">Com a Bênção de Deus</h2>
+                
+                <div class="space-y-6 text-sm md:text-base">
+                    <!-- Pais do Noivo -->
+                    <div>
+                        <p class="text-gray-400 text-xs uppercase tracking-widest mb-1">Pais do Noivo</p>
+                        <p class="font-semibold text-gray-800 serif-font">Natividade Pereira de Araújo</p>
+                        <p class="font-semibold text-gray-800 serif-font">& Maria Barros de Araújo</p>
+                    </div>
+
+                    <!-- Pais da Noiva -->
+                    <div>
+                        <p class="text-gray-400 text-xs uppercase tracking-widest mb-1">Pais da Noiva</p>
+                        <p class="font-semibold text-gray-800 serif-font">Reilson Barbosa Santos</p>
+                        <p class="font-semibold text-gray-800 serif-font">& Vânia Nunes de Araújo Pereira</p>
+                    </div>
+
+                    <div class="pt-4">
+                        <p class="text-gray-700 italic leading-relaxed">
+                            Temos a honra e a imensa alegria de anunciar que nossos filhos, 
+                            <span class="text-[#D4AF37] font-bold">Ronaldo & Vitória</span>, 
+                            se unirão em sagrado matrimônio.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 3: Convite Oficial -->
+        <section id="slide-2" class="slide w-full max-w-lg mx-auto">
+            <div class="glass-card p-8 text-center mx-4 border-2 border-[#D4AF37]/20">
+                <div class="mb-4">
+                    <i class="fa-solid fa-church text-[#D4AF37] text-2xl"></i>
+                </div>
+                
+                <h2 class="text-4xl text-gray-800 mb-4 script-font">Convite Oficial</h2>
+                
+                <p class="text-gray-600 mb-6 text-sm leading-relaxed">
+                    Com os corações cheios de gratidão, nós, os noivos, juntamente com nossos pais, temos a honra de convidar
+                </p>
+
+                <!-- Destaque para o convidado -->
+                <div class="bg-white/50 py-3 px-4 rounded-lg mb-6 shadow-inner">
+                    <span class="text-xl md:text-2xl text-[#D4AF37] font-serif font-bold script-font">
+                        Vanessa Santana e Família
+                    </span>
+                </div>
+
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Para testemunhar o início da nossa vida juntos. Sua presença tornará este dia ainda mais inesquecível para nós.
+                </p>
+            </div>
+        </section>
+
+        <!-- PÁGINA 4: Aceite e WhatsApp -->
+        <section id="slide-3" class="slide w-full max-w-lg mx-auto">
+            <div class="glass-card p-8 text-center mx-4">
+                <h2 class="text-3xl text-[#D4AF37] mb-2 script-font">Aceitar Convite</h2>
+                <p class="text-gray-500 text-xs uppercase tracking-widest mb-8">Sua resposta é importante</p>
+
+                <p class="text-gray-700 mb-8 text-sm leading-relaxed">
+                    Para aceitar nosso convite, clique no botão abaixo para nos enviar uma mensagem. 
+                    <br><br>
+                    <span class="font-bold text-[#D4AF37]"><i class="fa-solid fa-gift mr-1"></i> Atenção:</span>
+                    Após o aceite, enviaremos em breve o <strong>Manual dos Convidados</strong> contendo a lista de presentes, horário, local e igreja. A confirmação oficial de presença será feita somente após o recebimento deste manual.
+                </p>
+
+                <a href="#" onclick="sendWhatsApp(event)" class="bg-[#25D366] hover:bg-[#20bd5a] text-white px-6 py-4 rounded-full shadow-lg flex items-center justify-center gap-3 transition transform hover:scale-105 w-full font-bold uppercase text-sm tracking-wide">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                    Enviar Aceite aos Noivos
+                </a>
+            </div>
+        </section>
+
+        <!-- Controles de Navegação Fixos -->
+        <div class="fixed bottom-8 left-0 right-0 flex justify-center items-center gap-8 z-50">
+            <button onclick="changeSlide(-1)" class="nav-btn shadow-lg" aria-label="Voltar">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
             
-            <!-- Imagem de Fundo Suave (Casal/Flores) -->
-            <div class="absolute inset-0 z-0 opacity-10 pointer-events-none">
-                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover" alt="Background Texture">
+            <div class="flex gap-2" id="dots-container">
+                <!-- Dots gerados via JS -->
             </div>
 
-            <!-- Header com Foto do Casal (Conceitual) -->
-            <header class="relative h-[80vh] flex flex-col items-center justify-end pb-20 text-center px-6">
-                <!-- Imagem do Casal -->
-                <div class="absolute inset-0 z-0">
-                    <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=1470&auto=format&fit=crop" class="w-full h-full object-cover brightness-75" alt="Casal">
-                    <div class="absolute inset-0 bg-gradient-to-t from-wedding-cream via-transparent to-transparent"></div>
-                </div>
-
-                <div class="relative z-10 animate-fade-in-up">
-                    <p class="font-sans tracking-[0.2em] text-sm text-white uppercase mb-2 shadow-sm">Vamos nos casar</p>
-                    <h1 class="font-script text-6xl md:text-7xl text-white mb-2 leading-tight drop-shadow-lg">
-                        Ronaldo <br> <span class="text-4xl">&</span> <br> Vitória
-                    </h1>
-                    <div class="w-16 h-1 bg-white mx-auto mt-4 mb-4 rounded-full"></div>
-                </div>
-            </header>
-
-            <!-- Seção da Mensagem -->
-            <section class="px-8 py-12 text-center relative animate-on-scroll">
-                <!-- Ícone de Alianças -->
-                <div class="flex justify-center mb-6">
-                   <img src="https://img.icons8.com/ios/100/D4AF37/wedding-rings.png" class="w-12 h-12 opacity-80" alt="Alianças">
-                </div>
-                
-                <h2 class="font-serif text-3xl text-wedding-gold mb-6 italic">Com a benção de Deus</h2>
-                
-                <p class="font-serif text-xl text-gray-600 leading-relaxed italic">
-                    "Damos a honra de convidar Cleopta Santana e Família para celebrar o amor que nos une. 
-                    Nossa história é escrita pelas mãos de Deus, e sua presença tornará este capítulo ainda mais especial."
-                </p>
-            </section>
-
-            <!-- Seção dos Pais -->
-            <section class="px-6 py-10 bg-[#faf8f2] relative animate-on-scroll">
-                <!-- Decoração floral CSS (SVG inline) -->
-                <svg class="absolute top-0 right-0 w-24 h-24 text-wedding-gold opacity-10 transform rotate-90" viewBox="0 0 100 100" fill="currentColor"><path d="M50 0C50 27.6 27.6 50 0 50C27.6 50 50 72.4 50 100C50 72.4 72.4 50 100 50C72.4 50 50 27.6 50 0Z"/></svg>
-
-                <div class="text-center space-y-8">
-                    <div>
-                        <p class="font-sans text-xs uppercase tracking-widest text-gray-400 mb-2">Filhos de</p>
-                        <h3 class="font-serif text-2xl text-wedding-text font-semibold">Natividade Pereira de Araújo</h3>
-                        <h3 class="font-serif text-2xl text-wedding-text font-semibold">& Maria Barros de Araújo</h3>
-                    </div>
-
-                    <div class="flex items-center justify-center my-2">
-                        <span class="text-wedding-gold text-2xl">&</span>
-                    </div>
-
-                    <div>
-                        <h3 class="font-serif text-2xl text-wedding-text font-semibold">Reilson Barbosa Santos</h3>
-                        <h3 class="font-serif text-2xl text-wedding-text font-semibold">& Vânia Nunes de Araújo Pereira</h3>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Detalhes do Evento -->
-            <section class="relative py-16 px-6 text-center animate-on-scroll">
-                <!-- Background decorativo -->
-                <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-10 z-0"></div>
-                
-                <div class="relative z-10 glass-panel p-8 rounded-xl border border-wedding-gold/20">
-                    <h2 class="font-script text-5xl text-wedding-gold mb-6">Dezembro</h2>
-                    
-                    <div class="space-y-4 font-serif text-lg text-gray-700">
-                        <p>A cerimônia acontecerá no mês de Dezembro.</p>
-                        
-                        <div class="w-full h-px bg-wedding-gold/30 my-4"></div>
-                        
-                        <p class="text-sm italic text-gray-500">
-                            O convite oficial com a data exata, horário e endereço da igreja será enviado em breve.
-                        </p>
-                        <p class="text-sm font-bold text-wedding-gold mt-2">
-                            Qualquer mudança na data será avisada com antecedência.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Rodapé / Confirmação -->
-            <footer class="bg-[#2c2c2c] text-white py-12 px-6 text-center relative">
-                <div class="mb-8">
-                    <h3 class="font-script text-4xl mb-2 text-wedding-gold">Confirme sua Presença</h3>
-                    <p class="font-sans text-sm text-gray-400 font-light">
-                        Sua presença é o nosso maior presente.
-                    </p>
-                </div>
-
-                <!-- Botão WhatsApp -->
-                <button onclick="confirmPresence()" class="group relative w-full max-w-xs mx-auto bg-green-600 hover:bg-green-700 text-white font-serif py-4 px-6 rounded-full shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-3">
-                    <i data-lucide="message-circle" class="w-6 h-6"></i>
-                    <span>Confirmar pelo WhatsApp</span>
-                </button>
-                <p class="text-xs text-gray-500 mt-3 max-w-xs mx-auto">
-                    Ao clicar, escolha o contato do Noivo ou da Noiva na sua lista para enviar a mensagem automática.
-                </p>
-
-                <div class="mt-12 opacity-50">
-                    <p class="font-script text-2xl">R & V</p>
-                </div>
-            </footer>
+            <button onclick="changeSlide(1)" class="nav-btn shadow-lg" aria-label="Avançar">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
         </div>
+
     </main>
 
-    <!-- Script de Interação -->
     <script>
-        // Inicializa ícones
-        lucide.createIcons();
+        // Dados das Imagens (URLs fornecidas)
+        const bgImages = [
+            "https://lh3.googleusercontent.com/pw/AP1GczPtHo3JyrXxWKPUVJ-tEoHp8wY8Ub-L2VmknJV5snz_1rJA-HUJpdS1i9-AuqsbZxYxR1Cx7d295_ATR4rhmCR1BgVX8ke2DFQj9bZ0NptXk7O13evHuC9sqAVYe1vXACZF5H5KW_8sXcRnb9iHlwVYZg=w576-h288-s-no-gm?authuser=0", // Pág 1
+            "https://lh3.googleusercontent.com/pw/AP1GczOun2C7zVGJG3IewR_UuI6nopWHV7lkqWyA1qSp6vHjFxoyocOmusMlYc3A6HLZmb31b4GccBg72BfewXONDLETs756lOqI-ygvHYy_4s7L2MEWTIkE6lSHx8hjm4jrd1LZhfE6_ZLkmYLtIUu8Becp5g=w547-h365-s-no-gm?authuser=0", // Pág 2
+            "https://lh3.googleusercontent.com/pw/AP1GczP3yGp90Lmm3g8LXt8oI43gCt2gCMzQluIjP-vBaQUh-_6UTbC0_JkHXqWnqgqcBHMskHmSspwJwoASzv0E4FNxifW4L-uyUc6QriyLV9sXSu91jdkfkmtTApaB4rOf2to_noOcePz7ujvECs-B0Mf7zw=w399-h501-s-no-gm?authuser=0", // Pág 3
+            "https://lh3.googleusercontent.com/pw/AP1GczMBzyoMj0XWB-7TRXDVE3RGDxgV3NxJp8Tmedvc9BZ3LxpHRBfZGV5xFJfsYEtm-gnie3gmWT-a0WEL50qWmmZ8Z1CS-x_J623b3JvZEydnW5QoYyPG6DAfmSG3aVrDxFhykIrPyfq45NisfvGOfyvRKw=w399-h599-s-no-gm?authuser=0"  // Pág 4
+        ];
 
-        // Lógica do Envelope
-        function openEnvelope() {
-            document.body.classList.add('envelope-open');
-            // Permite scroll após abrir
-            document.body.style.overflowY = 'auto';
+        let currentSlide = 0;
+        const totalSlides = 4;
+
+        // Função para Abrir o Envelope
+        function openInvitation() {
+            const envelope = document.getElementById('envelope-wrapper');
+            const mainContent = document.getElementById('main-content');
             
-            // Dispara observador de animação
-            setTimeout(initScrollAnimation, 500);
+            // Animação de saída do envelope (slide up)
+            envelope.style.transform = 'translateY(-100%)';
+            
+            // Mostrar conteúdo principal
+            setTimeout(() => {
+                mainContent.classList.remove('hidden');
+                updateSlideView(); // Carrega a primeira imagem e slide
+            }, 300);
         }
 
-        // Lógica de Scroll Animation
-        function initScrollAnimation() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                    }
-                });
-            }, { threshold: 0.1 });
+        // Atualiza o Slide Visível e o Background
+        function updateSlideView() {
+            // Atualizar Background
+            const bgContainer = document.getElementById('bg-container');
+            
+            // Truque para pré-carregar imagem e suavizar transição
+            const img = new Image();
+            img.src = bgImages[currentSlide];
+            img.onload = () => {
+                bgContainer.style.backgroundImage = `url('${bgImages[currentSlide]}')`;
+            };
 
-            document.querySelectorAll('.animate-on-scroll').forEach((el) => {
-                observer.observe(el);
+            // Atualizar Seções de Texto
+            document.querySelectorAll('.slide').forEach((slide, index) => {
+                if(index === currentSlide) {
+                    slide.classList.add('active');
+                    slide.classList.add('animate-fade-up'); // Re-trigger animação
+                } else {
+                    slide.classList.remove('active');
+                    slide.classList.remove('animate-fade-up');
+                }
             });
+
+            // Atualizar Dots
+            updateDots();
+        }
+
+        // Navegação
+        function changeSlide(direction) {
+            currentSlide += direction;
+
+            // Loop infinito ou travar? Vamos travar nas pontas para melhor UX mobile
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+
+            updateSlideView();
+        }
+
+        // Gerar Dots de navegação
+        function createDots() {
+            const container = document.getElementById('dots-container');
+            for(let i=0; i<totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = `w-2 h-2 rounded-full transition-all duration-300 ${i === 0 ? 'bg-white w-4' : 'bg-white/50'}`;
+                container.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.getElementById('dots-container').children;
+            for(let i=0; i<dots.length; i++) {
+                if(i === currentSlide) {
+                    dots[i].className = 'w-4 h-2 rounded-full bg-white transition-all duration-300 shadow';
+                } else {
+                    dots[i].className = 'w-2 h-2 rounded-full bg-white/50 transition-all duration-300';
+                }
+            }
         }
 
         // Lógica do WhatsApp
-        function confirmPresence() {
-            const message = "Queridos noivos, Recebi o convite para o seu casamento e, com grande satisfação e alegria, confirmo a minha presença. Agradeço a consideração e a oportunidade de celebrar este momento sublime em suas vidas. Estarei presente para testemunhar essa união abençoada!";
+        function sendWhatsApp(e) {
+            e.preventDefault();
             
-            // Codifica a mensagem para URL
-            const encodedMessage = encodeURIComponent(message);
+            // Texto solicitado
+            const message = `Queridos Noivos,%0A%0ARecebemos com grande alegria e honra o convite para testemunhar esta nova aliança firmada em Deus. Agradecemos a consideração e a oportunidade de nos alegrarmos convosco. Já estamos ansiosos pelos detalhes!`;
             
-            // Usa a API genérica do WhatsApp (whatsapp://send ou https://wa.me) sem número de telefone.
-            // Isso força o app a abrir a lista de contatos para "Encaminhar" ou selecionar o destinatário.
+            // Usando API genérica sem número para forçar escolha do contato
+            // Nota: Em alguns dispositivos iOS/Android, se não tiver número, ele abre a lista de compartilhamento.
+            const url = `https://api.whatsapp.com/send?text=${message}`;
             
-            // Tenta abrir o app diretamente primeiro
-            const appLink = `whatsapp://send?text=${encodedMessage}`;
-            const webLink = `https://wa.me/?text=${encodedMessage}`;
-            
-            // Lógica simples de tentativa
-            window.location.href = webLink;
+            window.open(url, '_blank');
         }
 
-        // Bloqueia scroll inicial
-        document.body.style.overflowY = 'hidden';
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            createDots();
+            // Pré-carregar a primeira imagem
+            const preloadImg = new Image();
+            preloadImg.src = bgImages[0];
+        });
+
     </script>
 </body>
 </html>
